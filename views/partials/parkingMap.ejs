@@ -26,7 +26,7 @@
         </div>
         <form id="frm-parkingmap-buttonpanel" action="/parkingMapRoutesButtonPanel" method="POST">
             <div class="buttonpanel">
-                <button id="btn-refresh" class="waves-effect waves-light btn center" name="Refresh" value="refresh" type="submit">Refresh</button>
+                <button id="btn-viewme" class="waves-effect waves-light btn center" name="Viewme" value="viewme" type="button">Recenter Your Location</button>
                 <button id="btn-backdash" class="waves-effect waves-light btn center" name="Dashboard" value="dashboard" type="submit">Dashboard</button>
             </div> 
         </form>           
@@ -50,26 +50,36 @@
                             <td>1</td>
                             <td><img id="parking-img1"/><img id="parking-img12"/></td>
                             <td> <button id="btn-info1" class="waves-effect waves-light btn center" name="Info" value="1" type="button">Info</button></td>
+                            <input id="info1-lat" name="Info1Lat" type="hidden">
+                            <input id="info1-lon" name="Info1Lon" type="hidden">
                         </tr>
                         <tr>
                             <td>2</td>
                             <td><img id="parking-img2"/></td>
                             <td> <button id="btn-info2" class="waves-effect waves-light btn center" name="Info" value="2" type="button">Info</button></td>
+                            <input id="info2-lat" name="Info2Lat" type="hidden">
+                            <input id="info2-lon" name="Info2Lon" type="hidden">
                         </tr>
                         <tr>
                             <td>3</td>
                             <td><img id="parking-img3"/></td>
                             <td> <button id="btn-info3" class="waves-effect waves-light btn center" name="Info" value="3" type="button">Info</button></td>
+                            <input id="info3-lat" name="Info3Lat" type="hidden">
+                            <input id="info3-lon" name="Info3Lon" type="hidden">
                         </tr>
                         <tr>
                             <td>4</td>
                             <td><img id="parking-img4"/></td>
                             <td> <button id="btn-info4" class="waves-effect waves-light btn center" name="Info" value="4" type="button">Info</button></td>
+                            <input id="info4-lat" name="Info4Lat" type="hidden">
+                            <input id="info4-lon" name="Info4Lon" type="hidden">
                         </tr>
                         <tr>
                             <td>5</td>
                             <td><img id="parking-img5"/></td>
                             <td> <button id="btn-info5" class="waves-effect waves-light btn center" name="Info" value="5" type="button">Info</button></td>
+                            <input id="info5-lat" name="Info5Lat" type="hidden">
+                            <input id="info5-lon" name="Info5Lon" type="hidden">
                         </tr>
                         
                     </table>

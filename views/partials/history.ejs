@@ -1,0 +1,56 @@
+
+<div class="navigation">
+    <div class="mappanel">
+        <div class="navgooglemapframe">
+            <div id="map"></div>
+        </div>
+        <form id="frm-parkingmap-buttonpanel1" action="/parkingMapRoutesButtonPanel" method="POST">
+            <input id="arrayparking" name="NavArray" type="hidden">
+            <input id="arrayindexselected" name="NavArrayIndex" type="hidden">
+            <div class="navbuttonpanel">
+                <button id="btn-backdash" class="waves-effect waves-light btn center" name="Dashboard" value="dashboard" type="submit">Dashboard</button>
+            </div>
+        </form>
+    </div>
+    <div class="midpanel">
+        <div class="navlistpanel">           
+            <p class="listtitle">My Parking History</p>
+        <div id="history_info" style="width: max-content;">
+
+        </div>
+        </div>
+        <div class="navinfopanel">
+            <div class="navinfo">
+                <div class="input-field col s12">
+    
+                </div>  
+               
+                <img id="plus" src="images/plus.png"/>
+                <img id="minus" src="images/min.png"/>        
+            </div>
+        </div>          
+      
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    var history_data = <%- JSON.stringify(historydata) %>;
+    //setHistoryData(history_data);
+    //var history_data= '<%= historydata %>';
+    history_data=JSON.parse(history_data);
+    var historyHTML="<table class='table table-striped'><tr><th>Bay Id</th><th>Date & Time</th><th></th></tr>";
+    for(var i=0;i<history_data.length;i++)
+    {
+        //console.log(history_data[i]['bay_id']);
+        
+        historyHTML+="<tr>";
+        historyHTML+="<td>"+history_data[i]['bay_id']+"</td>";
+        historyHTML+="<td>"+history_data[i]['datetime']+"</td>";
+        historyHTML+="<td><button class='waves-effect waves-light btn center' value='navigate' type='submit' onclick='zoomTolocation("+i+")'>View</button></td>";
+        historyHTML+="</tr>";
+    }
+    history_data+="</table>"
+    document.getElementById("history_info").innerHTML=historyHTML;
+</script>

@@ -1,5 +1,11 @@
 var express = require('express');
 app = express();
+
+
+//initiation of socket instance
+let http = require('http').createServer(app);
+let io = require('socket.io')(http);
+
 const req = require('request');
 const ejs = require('ejs');
 const passport = require('passport');
@@ -15,6 +21,27 @@ app.set('view engine', 'ejs');
 
 var loggedIn=false;
 var loggedUsername ='';
+
+
+//establish the socket connection
+io.on('connection', (socket) => {
+    console.log('A user has connected');
+
+    //initiate the map
+    socket.emit('initiate_map', 'Map has been initiated')
+
+    //update parking data every 2 mintues
+    setInterval(()=>{
+      socket.emit('update_map', 'Map hasbeen updated with recent available parking data')
+    }, 120000);
+
+    //disconnect the socket
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });  
+});
+
+
 
 //spsf index page to sign in (landing or the signin page)
 app.get('/',function(request,response){
@@ -126,7 +153,16 @@ app.post('/displayDashboard',function(request,response){
         }else if(request.body.ChangePassword==='change'){
             response.render('displayChangePassword', {title: 'SPSF - Change Password', username:loggedUsername,oldpassword:'',newpassword:'',confirmpassword:'',message:'',loggedIn:loggedIn, signIn:false});
         }else if(request.body.ParkingHistory==='history'){
-            response.render('displayParkingHistory', {title: 'SPSF - Parking History', username:loggedUsername,loggedIn:loggedIn, signIn:false});
+            reqObject=spsfServiceUrl+"/getUserHistoryData?username="+loggedUsername;
+            req(reqObject,(err,result,body)=>{
+                if(err)
+                {
+                    return console.log(err);
+                }
+                response.render('displayParkingHistory',{title:"SPSF - Parking History",username:loggedUsername,password:'',message:'',historydata:result.body,loggedIn:loggedIn,signIn:false});
+            })
+
+            //response.render('displayParkingHistory', {title: 'SPSF - Parking History', username:loggedUsername,loggedIn:loggedIn, signIn:false});
         }       
     }else{
         response.render('index', {title: 'SPSF - Home', username:loggedUsername,password:'',message:'',loggedIn:loggedIn, signIn:false});
@@ -136,11 +172,9 @@ app.post('/displayDashboard',function(request,response){
 //refresh parking availability map and bac to dash board handling
 app.post('/parkingMapRoutesButtonPanel',function(request,response){
     if(loggedIn){
-        if(request.body.Refresh==='refresh'){
-            response.render('displayParkingMap', {title: 'SPSF - Parking Availability', username:loggedUsername,loggedIn:loggedIn, signIn:false});
-        }else if (request.body.Dashboard==='dashboard'){
+         if (request.body.Dashboard==='dashboard'){
             response.render('displayDashboard', {title: 'SPSF - Dashboard',username:loggedUsername,loggedIn:loggedIn, signIn:false});
-        }      
+            }      
     }else{
         response.render('index', {title: 'SPSF - Home', username:loggedUsername,password:'',message:'',loggedIn:loggedIn, signIn:false});
     }   
@@ -158,6 +192,7 @@ app.post('/parkingMapRoutesMidPanel',function(request,response){
     }   
 })
 
+
 //get all available parking data from the service
 app.get('/getAllAvailableParkingData', function (request,response){
 
@@ -170,5 +205,26 @@ app.get('/getAllAvailableParkingData', function (request,response){
     })          
 })
 
-app.listen(port);
-console.log('Server listening on : '+port);
+// get display parking history data
+app.get('/displayParkingHistory',function(request,response){
+    if(loggedIn)
+    {
+        reqObject=spsfServiceUrl+"/getUserHistoryData?username="+request.body.Username;
+        req(reqObject,(err,result,body)=>{
+            if(err)
+            {
+                return console.log(err);
+            }
+            response.render('displayParkingHistory',{title:"SPSF - Parking History",username:loggedUsername,password:'',message:'',historydata:result.body,loggedIn:loggedIn,signIn:false});
+        })
+        
+    }
+    else
+    {
+        response.render('index', {title: 'SPSF - Home', username:loggedUsername,password:'',message:'',loggedIn:loggedIn, signIn:false});
+    }
+})
+
+http.listen(port,()=>{
+    console.log('Server is listening on :'+port);
+});
